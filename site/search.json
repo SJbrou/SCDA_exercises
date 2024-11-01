@@ -1,0 +1,56 @@
+[
+  {
+    "objectID": "tutorial1.html",
+    "href": "tutorial1.html",
+    "title": "Tutorial week 1",
+    "section": "",
+    "text": "Exercise 1",
+    "crumbs": [
+      "Tutorials",
+      "Tutorial 1"
+    ]
+  },
+  {
+    "objectID": "tutorial1.html#section",
+    "href": "tutorial1.html#section",
+    "title": "Tutorial week 1",
+    "section": "1.1",
+    "text": "1.1\nVisualize the time series for the entire duration\n\n# Load the data\nsupermarket_data &lt;- read_excel(\"data/SupermarketSales.xlsx\")\n\n# plot the timeseries\nplot.ts(supermarket_data$demand)",
+    "crumbs": [
+      "Tutorials",
+      "Tutorial 1"
+    ]
+  },
+  {
+    "objectID": "tutorial1.html#section-1",
+    "href": "tutorial1.html#section-1",
+    "title": "Tutorial week 1",
+    "section": "1.2",
+    "text": "1.2\nPrepare and clean the data as necessary to ensure accuracy for analysis.\na few notes: - there are a few missing observation dates (missing data) - there are negative values. Lets suppose they should be removed. - there are outliers, lets remove those as well\nNow we end up with much missing (“NA”) data. We should also curve-fit them\n\n# lets start by converting dates to a machine-readable date format\nsupermarket_data &lt;- supermarket_data %&gt;%\n  mutate(date = as.Date(as.character(date), format = \"%Y%m%d\"))\n\n# Now lets create a sequence of dates with the missing dates\nall_dates &lt;- data.frame(date = seq(min(supermarket_data$date), max(supermarket_data$date), by = \"day\"))\n\n# Join the two dataframes and introduce \"NA\" values on missing dates\ndata &lt;- all_dates %&gt;%\n  left_join(supermarket_data, by = \"date\")\n\n# Change any negative value to \"NA\"\ndata &lt;- data %&gt;%\n  mutate(demand = ifelse(demand &lt; 0, NA, demand))\n\nplot_ly(data, x = ~date, y = ~demand, type = 'scatter', mode = 'lines') # nice interactive plot",
+    "crumbs": [
+      "Tutorials",
+      "Tutorial 1"
+    ]
+  },
+  {
+    "objectID": "tutorial1.html#section-2",
+    "href": "tutorial1.html#section-2",
+    "title": "Tutorial week 1",
+    "section": "1.3",
+    "text": "1.3\nSplit the data into training and validation sets. What proportion of the data would be reasonable for each set based on the characteristics of the time series?\n**In class a default of 80/20 or 70/30 was discussed. As there are 4 distinct periods, the last one could be used as validation set. (however, the demand in 2021 seems particularly weak!)\n§",
+    "crumbs": [
+      "Tutorials",
+      "Tutorial 1"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Supply Chain Data Analytics",
+    "section": "",
+    "text": "Home\nThese are my exercises and resources for the Supply Chain Data Analytics course. I like ordering these so I can order my thoughs, hopefully you’ll find in them as well\nThe site is hosted on github pages and written and build using Rstudio and Quarto. You can always reach out to me if you want to chat about hosting your own sites on github. I’m available.",
+    "crumbs": [
+      "Home"
+    ]
+  }
+]

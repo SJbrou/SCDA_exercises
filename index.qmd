@@ -1,9 +1,5 @@
-# Preface {.unnumbered}
+# Home {.unnumbered}
 
-This is a Quarto book.
+These are my exercises and resources for the Supply Chain Data Analytics course. I like ordering these so I can order my thoughs, hopefully you'll find in them as well
 
-To learn more about Quarto books visit <https://quarto.org/docs/books>.
-
-```{r}
-1 + 1
-```
+The site is hosted on github pages and written and build using Rstudio and [Quarto](https://quarto.org/docs/books). You can always reach out to me if you want to chat about hosting your own sites on github. I'm available. 

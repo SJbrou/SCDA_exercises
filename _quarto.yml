@@ -2,22 +2,38 @@ project:
   type: book
 
 book:
-  title: "SCDA_exercises"
-  author: "Norah Jones"
-  date: "11/1/2024"
+  title: "Supply Chain Data Analytics"
+  author: "Stan Brouwer"
+  date: "2024-11-01"
   chapters:
-    - index.qmd
-    - intro.qmd
-    - summary.qmd
-    - references.qmd
+    - text: "Home"
+      file: index.qmd
+    - part: "Tutorials"
+      chapters:
+        - text: "Tutorial 1"
+          file: tutorial1.qmd
+#    - part: "Data Analysis"
+#      chapters:
+    #     - text: "Participants"
+    #       file: participants.qmd
+    #     - text: "Handling IMU data"
+    #       file: datafiltering.qmd
+    #     - text: "Manual clipping"
+    #       file: manualfiltering.qmd
+    # - part: "Statistical analysis"
+    #   chapters:
+    #     - text: "Analysis of lifts"
+    #       file: analysis_of_lifst.qmd
+    #     - text: "Analysis of lifts mean values"
+    #       file: analysis_of_lifst_mean_values.qmd          
+    #     - text: "Results"
+    #       file: results.qmd
 
-bibliography: references.bib
-
+        
 format:
   html:
     theme: cosmo
   pdf:
     documentclass: scrreprt
 
-
-
+editor: visual

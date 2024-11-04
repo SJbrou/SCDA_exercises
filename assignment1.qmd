@@ -1,3 +1,14 @@
+---
+format: 
+  html:
+    toc: false
+    margin-left: 2rem
+    margin-right: 2rem
+    width: full
+---
+
+
+
 # Assignment 1 {.unnumbered}
 
 Before doing anything, lets clear the workspace and load dependencies.
@@ -28,18 +39,20 @@ install_and_load(c("tidyverse", "readxl", "ggplot2", "plotly", "dplyr", "lubrida
 Before starting the assignment, lets take a look at the data and run some descriptive statistics to decide what cleaning is required. 
 
 Lets start by plotting the total amount of orders by date
-```{r descriptive_statistics, warining=FALSE}
+```{r descriptive_statistics, warining=FALSE, message=FALSE}
 # Load the data
-data <- read_excel("data/assignment1/sample_-_superstore.xls")
+suppressWarnings({data <- read_excel("data/assignment1/sample_-_superstore.xls")})
 
 # Ensure machine-readable date-time format
-data$`Order Date` <- as.Date(data$`Order Date`, format = "%Y-%m-%d")
+suppressWarnings({data$`Order Date` <- as.Date(data$`Order Date`, format = "%Y-%m-%d")})
 
 # Plot!
-ggplotly( ggplot(data, aes(x = `Order Date`)) +
-  geom_histogram(binwidth = 30, fill = "blue", color = "black") +
-  labs(title = "Total Orders by Date", x = "Order Date", y = "Frequency") +
-  theme_minimal())
+suppressWarnings({
+  ggplotly(ggplot(data, aes(x = `Order Date`)) +
+    geom_histogram(binwidth = 30, fill = "blue", color = "black") +
+    labs(title = "Total Orders by Date", x = "Order Date", y = "Frequency") +
+    theme_minimal())
+})
 ```
 Lets also plot the frequency of 20 most sold items
 ```{r descriptive_statistics2}

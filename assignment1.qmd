@@ -1,0 +1,86 @@
+# Assignment 1 {.unnumbered}
+
+Before doing anything, lets clear the workspace and load dependencies.
+
+```{r setup, results='hide'}
+# Clear workspace
+rm(list = ls())
+
+
+# This is a complex way of loading al required packages. simply calling:
+# library(readxl) should suffice.
+
+# Load dependencies
+install_and_load <- function(packages) {
+  installed_packages <- rownames(installed.packages())                                # Check installed packages
+  to_install <- packages[!(packages %in% installed_packages)]
+  if (length(to_install) > 0) {                                                       # Install missing
+    install.packages(to_install, dependencies = TRUE)
+  }
+  suppressMessages(lapply(packages, require, character.only = TRUE, quietly = TRUE))  # Load
+}
+install_and_load(c("tidyverse", "readxl", "ggplot2", "plotly", "dplyr", "lubridate"))
+
+```
+
+# Descriptive Statistics
+
+Before starting the assignment, lets take a look at the data and run some descriptive statistics to decide what cleaning is required. 
+
+Lets start by plotting the total amount of orders by date
+```{r descriptive_statistics, warining=FALSE}
+# Load the data
+data <- read_excel("data/assignment1/sample_-_superstore.xls")
+
+# Ensure machine-readable date-time format
+data$`Order Date` <- as.Date(data$`Order Date`, format = "%Y-%m-%d")
+
+# Plot!
+ggplotly( ggplot(data, aes(x = `Order Date`)) +
+  geom_histogram(binwidth = 30, fill = "blue", color = "black") +
+  labs(title = "Total Orders by Date", x = "Order Date", y = "Frequency") +
+  theme_minimal())
+```
+Lets also plot the frequency of 20 most sold items
+```{r descriptive_statistics2}
+
+# Count frequency of top 20 products
+top_products <- data %>%
+  count(`Product Name`, sort = TRUE) %>%
+  top_n(20, n)
+
+# Plot!
+ggplotly(ggplot(top_products, aes(x = reorder(`Product Name`, -n), y = n)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Top 20 Most Sold Products",
+       x = "Product Name",
+       y = "Frequency") +
+  theme_minimal() +
+  coord_flip())
+```
+Also, lets include time-series for the top 3 sold products:
+```{r descriptives3}
+# Find top 3 most sold product names
+top_3_products <- top_products$`Product Name`[1:3]
+
+# Filter the data for  top 3 products
+top_3_data <- data %>% filter(`Product Name` %in% top_3_products)
+
+# calculate sales per month
+top_3_data <- top_3_data %>%
+  mutate(Month = floor_date(`Order Date`, unit = "month"))
+
+# Aggregate data by month for each product
+top_3_data_aggregated <- top_3_data %>%
+  group_by(Month, `Product Name`) %>%
+  summarise(Sales_Count = n(), .groups = 'drop')
+
+# Plot!
+ggplotly(ggplot(top_3_data_aggregated, aes(x = Month, y = Sales_Count, fill = `Product Name`)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Monthly Sales for the Top 3 Most Sold Products",
+       x = "Month",
+       y = "Sales Count",
+       fill = "Product Name") +
+  theme_minimal())
+```

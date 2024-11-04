@@ -13,6 +13,10 @@ book:
       chapters:
         - text: "Tutorial 1"
           file: tutorial1.qmd
+    - part: "Assignment"
+      chapters:
+        - text: "Assignment 1"
+          file: assignment1.qmd
 #    - part: "Data Analysis"
 #      chapters:
     #     - text: "Participants"

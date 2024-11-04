@@ -44,15 +44,13 @@ Lets start by plotting the total amount of orders by date
 suppressWarnings({data <- read_excel("data/assignment1/sample_-_superstore.xls")})
 
 # Ensure machine-readable date-time format
-suppressWarnings({data$`Order Date` <- as.Date(data$`Order Date`, format = "%Y-%m-%d")})
+data$`Order Date` <- as.Date(data$`Order Date`, format = "%Y-%m-%d")
 
 # Plot!
-suppressWarnings({
   ggplotly(ggplot(data, aes(x = `Order Date`)) +
     geom_histogram(binwidth = 30, fill = "blue", color = "black") +
     labs(title = "Total Orders by Date", x = "Order Date", y = "Frequency") +
     theme_minimal())
-})
 ```
 Lets also plot the frequency of 20 most sold items
 ```{r descriptive_statistics2}

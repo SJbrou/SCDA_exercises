@@ -2,8 +2,7 @@
 format: 
   html:
     toc: false
-    margin-left: 2rem
-    margin-right: 2rem
+    code-fold: show
     width: full
 ---
 
@@ -94,4 +93,63 @@ ggplotly(ggplot(top_3_data_aggregated, aes(x = Month, y = Sales_Count, fill = `P
        y = "Sales Count",
        fill = "Product Name") +
   theme_minimal())
+```
+
+Since there are little sales per unique product, we can also explore the descriptives of the aggregate per Sub-Category:
+
+
+Lets also plot the frequency of 20 most sold items
+```{r AggregateStatistics}
+
+# Count frequency of top 20 products
+top_categories <- data %>%
+  count(`Sub-Category`, sort = TRUE)
+
+# Plot!
+ggplotly(ggplot(top_categories, aes(x = reorder(`Sub-Category`, -n), y = n)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Sub-Categories sorted",
+       x = "Product Name",
+       y = "Frequency") +
+  theme_minimal() +
+  coord_flip())
+```
+Also, lets include time-series for the top 3 sold products:
+```{r AggregateStatistics2}
+# Find top 3 most sold product names
+top_3_categories <- top_categories$`Sub-Category`[0:9]
+
+# Filter the data for  top 3 products
+top_3_data <- data %>% filter(`Sub-Category` %in% top_3_categories)
+
+# calculate sales per month
+top_3_data <- top_3_data %>%
+  mutate(Month = floor_date(`Order Date`, unit = "month"))
+
+# Aggregate data by month for each product
+top_3_data_aggregated <- top_3_data %>%
+  group_by(Month, `Sub-Category`) %>%
+  summarise(Sales_Count = n(), .groups = 'drop')
+
+# Plot!
+ggplotly(ggplot(top_3_data_aggregated, aes(x = Month, y = Sales_Count, fill = `Sub-Category`)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Monthly Sales for the Top 3 Most Sold Products",
+       x = "Month",
+       y = "Sales Count",
+       fill = "Product Name") +
+  theme_minimal())
+
+ggplotly(
+  ggplot(top_3_data_aggregated, aes(x = Month, y = Sales_Count, color = `Sub-Category`, group = `Sub-Category`)) +
+    geom_line(size = 1) +
+    geom_point(size = 2) +  # Optional: adds points to make each data point clearer
+    labs(title = "Monthly Sales for the Top 3 Most Sold Products",
+         x = "Month",
+         y = "Sales Count",
+         color = "Product Name") +
+    theme_minimal()
+)
+
+
 ```

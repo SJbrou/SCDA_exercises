@@ -2,7 +2,7 @@
 
 Exercises can be found on [canvas](https://canvas.vu.nl/courses/77521/files/8290683?module_item_id=1420165)
 
-Before starting the exercises, lets clear the workspace and load dependencies. 
+Before starting the exercises, lets clear the workspace and load dependencies.
 
 ```{r setup, results='hide'}
 # Clear workspace
@@ -41,14 +41,10 @@ plot.ts(supermarket_data$demand)
 
 ## 1.2
 
-Prepare and clean the data as necessary to ensure accuracy for analysis.  
-a few notes:
-- there are a few missing observation dates (missing data)
-- there are negative values. Lets suppose they should be removed.
-- there are outliers, lets remove those as well
+Prepare and clean the data as necessary to ensure accuracy for analysis.\
+a few notes: - there are a few missing observation dates (missing data) - there are negative values. Lets suppose they should be removed. - there are outliers, lets remove those as well
 
 Now we end up with much missing ("NA") data. We should also curve-fit them
-
 
 ```{r exercise 1.2}
 # lets start by converting dates to a machine-readable date format
@@ -69,11 +65,11 @@ data <- data %>%
 plot_ly(data, x = ~date, y = ~demand, type = 'scatter', mode = 'lines') # nice interactive plot
 
 ```
+
 ## 1.3
 
 Split the data into training and validation sets. What proportion of the data would be reasonable for each set based on the characteristics of the time series?
 
-**In class a default of 80/20 or 70/30 was discussed. 
-As there are 4 distinct periods, the last one could be used as validation set. (however, the demand in 2021 seems particularly weak!)
+\*\*In class a default of 80/20 or 70/30 was discussed. As there are 4 distinct periods, the last one could be used as validation set. (however, the demand in 2021 seems particularly weak!)
 
 §

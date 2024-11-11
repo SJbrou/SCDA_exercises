@@ -1,0 +1,22 @@
+# Usefull functions
+
+::: {style="background-color: #dddddd; border-radius: 8px; padding:14px"}
++------------------------------+--------------------------------------------------------------------------------------------------------+
+| Task                         | Function                                                                                               |
++==============================+========================================================================================================+
+| Simple exponential smoothing | <code>ses(data, alpha, h)</code>                                                                       |
++------------------------------+--------------------------------------------------------------------------------------------------------+
+| Holt's model                 | <code>holt(data, alpha, beta, h) --\> Only for additive error and addititve trend</code>               |
++------------------------------+--------------------------------------------------------------------------------------------------------+
+| Holt-Winter's model          | <code>hw(data, seasonal, trend, alpha, beta, gamma, h)\                                                |
+|                              | Only for additive error\                                                                               |
+|                              | Any exponential smoothing                                                                              |
++------------------------------+--------------------------------------------------------------------------------------------------------+
+| Any exponential smoothing    | <code>ets(data, model="ZAA" or any other combination</code>\                                           |
+|                              | If you do not specify model and parameters, ets() selects the best smoothing model and best parameters |
++------------------------------+--------------------------------------------------------------------------------------------------------+
+| centered moving average      | <code>rollmean(data, window size, align="center")</code>                                               |
++------------------------------+--------------------------------------------------------------------------------------------------------+
+| trailed moving average       | <code>rollmean(data, window size, align="right")</code>                                                |
++------------------------------+--------------------------------------------------------------------------------------------------------+
+:::

@@ -9,10 +9,14 @@ book:
   chapters:
     - text: "Home"
       file: index.qmd
+    - text: "usefull functions"
+      file: usefull_functions.qmd
     - part: "Tutorials"
       chapters:
         - text: "Tutorial 1"
           file: tutorial1.qmd
+        - text: "Tutorial 2"
+          file: tutorial2.qmd
     - part: "Assignments"
       chapters:
         - text: "Assignment 1"
@@ -37,6 +41,7 @@ book:
         
 format:
   html:
+    code-fold: true
     theme: cosmo
   pdf:
     documentclass: scrreprt

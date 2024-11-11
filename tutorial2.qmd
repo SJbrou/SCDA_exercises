@@ -1,0 +1,167 @@
+# Tutorial week 2 {.unnumbered}
+
+Exercises can be found on [canvas](https://canvas.vu.nl/courses/77521/files/8290683?module_item_id=1420165)
+
+Before starting the exercises, lets clear the workspace and load dependencies.
+
+```{r setup, results='hide'}
+# Clear workspace
+rm(list = ls())
+
+# This is a complex way of loading al required packages. simply calling:
+# library(readxl) should suffice.
+
+# Load dependencies
+install_and_load <- function(packages) {
+  installed_packages <- rownames(installed.packages())                                # Check installed packages
+  to_install <- packages[!(packages %in% installed_packages)]
+  if (length(to_install) > 0) {                                                       # Install missing
+    install.packages(to_install, dependencies = TRUE)
+  }
+  suppressMessages(lapply(packages, require, character.only = TRUE, quietly = TRUE))  # Load
+}
+install_and_load(c("tidyverse", "readxl", "ggplot2", "plotly", "zoo", "forecast", "TTR"))
+
+```
+
+# Example
+
+The file ApplianceShipments.xls contains data on the quarterly shipments of appliances over a 5 year period
+
+a. Plot the original time series.\
+b. Calculate the centered and trailing moving average for any possible period.\
+c. Partition the data into training and validation data such that the last year would be your validation data.\
+d. Fit a smoothing model to your data with additive error, trend, and seasonality. What are the forecast values for the validation period? Find the accuracy of the smoothing model.\
+e. Plot the actual data and the forecast values for the validation period.\
+f. Plot the residuals of the training data.\
+
+As provided on canvas:
+```{r example, message=FALSE, warning=FALSE}
+
+library(zoo)
+library(forecast)
+library(TTR)
+
+#import data from CSV
+AS <- read.csv("data/tutorial2/ApplianceShipments.csv")
+
+#convert data to a time series object
+AS.ts <- ts(AS$Shipments,start=c(1985,1), end=c(1989,4),freq=4)
+
+AS.ts
+
+
+#part a)
+#plot the original time series
+plot(AS.ts, xlab="Time", ylab="Shipments", bty="l",xlim=c(1985,1989), ylim=c(3500,5500))
+
+#part b)
+#create centered and trailing moving averages
+ma.centered <- rollmean(AS.ts,k=4,align="center")  #order is window size
+ma.centered 
+ma.trailing <- rollmean(AS.ts,k=4,align="right") 
+ma.trailing
+
+# add centered moving average line
+lines(ma.centered,lwd=2,lty=2, col="red")
+
+#add trailing moving average line
+lines(ma.trailing,lwd=2,lty=3, col="blue")
+legend(1987,5500, c("Shipments","Centered Moving Average"), lty=c(1,1))
+
+#part c)
+#Make training and validation sets
+#define validation period
+nValid <- 4
+#define training period
+nTrain <- length(AS.ts) - nValid
+#define training set
+train.ts <- window(AS.ts, start=c(1985,1), end=c(1985,nTrain))
+#define validation set
+valid.ts <- window(AS.ts, start=c(1985,nTrain+1), end=c(1985,nTrain+nValid))
+
+train.ts
+valid.ts
+
+#part d)
+#Do the smoothing
+#fit a smoothing model using ets() function. You could use ses(), holt(), or hw() depending on your time series characteristics
+shipment <- ets(train.ts, model="AAA") #alternatively you could fit ZMA or ZAM or ZMM
+#do the forecast based on the fitted model
+shipment.forecast <- forecast(shipment,h=nValid,level=0)
+
+shipment.forecast
+
+#calculate the accuracy on validation data
+accuracy(shipment.forecast, valid.ts)
+#the output of the accuracy() shows you the metrics on both training data and validation data. To assess the performance of your model without any bias, you should always look at validation data (unseen data).
+
+
+
+#part e)
+#plot
+#par(mfrow =c(2,1))
+#plot the forecast for validation period
+plot(shipment.forecast, xlab="Time", ylab="Shipments", bty="l",xlim=c(1985,1990), ylim=c(3500,5500))
+
+#plot the actual data for validation period
+lines(valid.ts)
+
+#Plot the fitted values for training period
+lines(shipment.forecast$fitted,lwd=2,col="blue")
+#shipment.forecast$fitted: this gives you the fitted values on the training data
+
+#part f)
+#plot the residuals of the training data
+plot(shipment.forecast$residuals, xlab="Time", ylab="Shipments", bty="l",xlim=c(1985,1989.8),
+     ylim=c(0,0.1)) #multiplitive errors residuals are (real value / fitted values) - 1.
+#shipment.forecast$residuals: this gives you the residuals on the training data
+```
+::: column-margin
+There was a small error in the provided code. The <code>shipment.forecast <- forecast(hwin,h=nValid,level=0)</code> should be replaced with <code>shipment.forecast <- forecast(shipment,h=nValid,level=0)</code>
+
+
+
+
+```{r exercise 1.1}
+# Load the data
+supermarket_data <- read_excel("data/SupermarketSales.xlsx")
+
+# plot the timeseries
+plot.ts(supermarket_data$demand)
+```
+
+## 1.2
+
+Prepare and clean the data as necessary to ensure accuracy for analysis.\
+a few notes: - there are a few missing observation dates (missing data) - there are negative values. Lets suppose they should be removed. - there are outliers, lets remove those as well
+
+Now we end up with much missing ("NA") data. We should also curve-fit them
+
+```{r exercise 1.2}
+# lets start by converting dates to a machine-readable date format
+supermarket_data <- supermarket_data %>%
+  mutate(date = as.Date(as.character(date), format = "%Y%m%d"))
+
+# Now lets create a sequence of dates with the missing dates
+all_dates <- data.frame(date = seq(min(supermarket_data$date), max(supermarket_data$date), by = "day"))
+
+# Join the two dataframes and introduce "NA" values on missing dates
+data <- all_dates %>%
+  left_join(supermarket_data, by = "date")
+
+# Change any negative value to "NA"
+data <- data %>%
+  mutate(demand = ifelse(demand < 0, NA, demand))
+
+plot_ly(data, x = ~date, y = ~demand, type = 'scatter', mode = 'lines') # nice interactive plot
+
+```
+
+## 1.3
+
+Split the data into training and validation sets. What proportion of the data would be reasonable for each set based on the characteristics of the time series?
+
+\*\*In class a default of 80/20 or 70/30 was discussed. As there are 4 distinct periods, the last one could be used as validation set. (however, the demand in 2021 seems particularly weak!)
+
+§

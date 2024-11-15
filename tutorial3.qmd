@@ -28,15 +28,14 @@ install_and_load(c("tidyverse", "readxl", "ggplot2", "plotly", "zoo", "forecast"
 
 The file ApplianceShipments.xls contains data on the quarterly shipments of appliances over a 5 year period
 
-a.  Plot the original time series.\
-b.  Calculate the centered and trailing moving average for any possible period.\
-c.  Partition the data into training and validation data such that the last year would be your validation data.\
-d.  Fit a smoothing model to your data with additive error, trend, and seasonality. What are the forecast values for the validation period? Find the accuracy of the smoothing model.\
-e.  Plot the actual data and the forecast values for the validation period.\
-f.  Plot the residuals of the training data.\
+a. Plot the original time series.\
+b. Calculate the centered and trailing moving average for any possible period.\
+c. Partition the data into training and validation data such that the last year would be your validation data.\
+d. Fit a smoothing model to your data with additive error, trend, and seasonality. What are the forecast values for the validation period? Find the accuracy of the smoothing model.\
+e. Plot the actual data and the forecast values for the validation period.\
+f. Plot the residuals of the training data.\
 
 As provided on canvas:
-
 ```{r example, message=FALSE, warning=FALSE}
 
 library(zoo)
@@ -118,8 +117,11 @@ plot(shipment.forecast$residuals, xlab="Time", ylab="Shipments", bty="l",xlim=c(
      ylim=c(0,0.1)) #multiplitive errors residuals are (real value / fitted values) - 1.
 #shipment.forecast$residuals: this gives you the residuals on the training data
 ```
+::: column-margin
+There was a small error in the provided code. The <code>shipment.forecast <- forecast(hwin,h=nValid,level=0)</code> should be replaced with <code>shipment.forecast <- forecast(shipment,h=nValid,level=0)</code>
 
-::: column-margin There was a small error in the provided code. The <code>shipment.forecast \<- forecast(hwin,h=nValid,level=0)</code> should be replaced with <code>shipment.forecast \<- forecast(shipment,h=nValid,level=0)</code>
+
+
 
 ```{r exercise 1.1}
 # Load the data
